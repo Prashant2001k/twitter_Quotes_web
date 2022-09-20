@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/b40b50a1fb.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Quotes API</title>
+<link rel="stylesheet" href="/css/index.d96ba373.css">
+</head>
+{{!-- <main>
+    
+      {{>navbar}}
+    </main> --}}
+<body>
+    <!-- <div id="quotes"></div>
+    <div id="author"></div>
+    <button id="butt">new Quotes</button>
+    <button id="tweetme">Tweet</button>
+     -->
+
+   <div class="container">
+        <div class="inner">
+            <div class="box">
+                <p class="number">
+                    <!-- <img src="" alt="tweetMe" title="tweetMe" id="tweet"> -->
+                    <i class="fab fa-twitter" id="tweetme"></i>
+                </p>
+                <div class="text">
+                    <i class="start-quote fa fa-quote-left"></i>
+                    <p id="quotes" class="quote">dtd</p>
+                    <p id="author" class="author">dfgdg</p>
+                </div>
+                <label class="button">
+                    <p id="butt">New Quotes</p>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         let realdata="";
+         const quotes=document.getElementById("quotes");
+         const author=document.getElementById("author");
+         const button=document.getElementById("butt");
+         const tweetme=document.getElementById("tweetme");
+
+        const tweet=()=>{
+            let tweetpost=`https://twitter.com/intent/tweet?text=${quotes.innerText}`;
+            window.open(tweetpost);
+        }
+
+         const getnewQuotes=()=>{
+             let rum=Math.floor(Math.random()*realdata.length);
+             quotes.innerText=realdata[rum].text;
+             if(realdata[rum].author==null){
+                author.innerText="Unknown";
+             }else{
+                 author.innerText=realdata[rum].author;
+             }
+            //  console.log(realdata);  
+            //  console.log(realdata[rum].author); 
+            
+         }
+        const getQuotes=async()=>{
+            const api="https://type.fit/api/quotes";
+            try {
+                let data=await fetch(api);
+                realdata=await data.json();
+                getnewQuotes();
+            } catch (error) {
+                
+            };
+        }
+        tweetme.addEventListener("click",tweet);
+        button.addEventListener("click",getnewQuotes);
+        getQuotes();
+    </script>
+</body>
+</html>
