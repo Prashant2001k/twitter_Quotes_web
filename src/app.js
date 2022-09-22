@@ -1,10 +1,14 @@
+require('dotenv').config();//
 const express =require("express");
 const app =express();
 const path=require("path");
 const hbs=require("hbs");
 const bcrypt=require("bcryptjs");
+const cookieParser=require("cookie-parser"); //
 require("./db/conn");
 const Register=require('./models/registers')
+const jwt=require("jsonwebtoken");
+const auth=require("./middleware/auth");
 const port=process.env.PORT || 3001;
 
 const static_path=path.join(__dirname,"../public");
@@ -20,7 +24,7 @@ app.set("view engine","hbs");
 app.set("views",templates_path);
 
 hbs.registerPartials(partials_path); 
-app.get("/index",(req,res)=>{
+app.get("/index",auth,(req,res)=>{
     // res.send("<h1>hello this is our Home Page</h1>");
     res.render("index");
 }) 
@@ -63,6 +67,14 @@ app.post("/register",async(req,res)=>{
                 // confirmpassword:"1234",
             })
 
+
+            const token=await registerEmployee.generateAuthToken();
+            res.cookie("jwt",token,{
+                expires:new Date(Date.now()+300000),
+                httpOnly:true, 
+                secure:true 
+            })
+
             const registered= await registerEmployee.save();
             console.log(registered);
             res.status(201).render("index");
@@ -87,6 +99,15 @@ app.post("/login",async(req,res)=>{
         
         const useremail= await Register.findOne({email:email});
         const ismatch= await bcrypt.compare(password,useremail.password);
+
+        const token=await useremail.generateAuthToken();
+        res.cookie("jwt",token,{
+            expires:new Date(Date.now()+300000),
+            httpOnly:true,
+            secure:true 
+        })
+
+
         if(ismatch){
             // res.send(useremail); 
             res.status(201).render("index");
